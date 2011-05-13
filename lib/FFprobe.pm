@@ -2,9 +2,10 @@ package FFprobe;
 
 use common::sense;
 use Carp;
+use Encode;
 use version 0.77;
 
-our $VERSION = qv("v0.0.2");
+our $VERSION = qv("v0.0.3");
 
 =head1 NAME
 
@@ -72,12 +73,15 @@ sub __run_ffprobe(@) {
     }
 }
 
+my $utf8 = find_encoding("UTF-8");
+
 sub probe_file($$) {
     my ($class, $file) = @_;
     my $probe = __run_ffprobe $file;
 
     my ($tree, $branch, $tag, $stream);
     while(my $line = <$probe>) {
+	$line = $utf8->decode($line);
 	if($line =~ m!^\[(/?)(STREAM|FORMAT)\]!) {
 	    if ($1 eq "/") {
 		$branch = undef;

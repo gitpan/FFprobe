@@ -14,8 +14,14 @@ my $builder = Module::Build->new(
 	'perl' => '5.10.0',
 	'Carp' => 0,
 	'common::sense' => 0,
+	'Encode' => 0,
 	'version' => '0.77',
     }
 );
+
+unless(qx{ffprobe -version 2>&1} =~ /libavcodec/) {
+    say "'ffprobe' (part of ffmpeg/libav) is not present in this system's PATH. Aborting...";
+    exit 0;
+}
 
 $builder->create_build_script;
